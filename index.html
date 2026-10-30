@@ -1,0 +1,1016 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>[hidden]{display:none!important}img{max-width:100%}</style>
+<title>Guide SASP</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=IBM+Plex+Mono:wght@400;500&family=Source+Sans+3:wght@400;600;700&display=swap">
+<style>
+/* Layout concept: portal with a sticky navy header and a page tab row; each page is a station-binder of ruled blocks, with a section index on the left. */
+:root{
+  --bg:#edf0f4; --panel:#ffffff; --ink:#121a2b; --muted:#546078; --line:#d5dbe5;
+  --brand:#13264d; --primary:#1b4fd0; --gold:#b98a00; --gold-soft:#fbf1cf; --on-gold:#1a1400;
+  --danger:#b3261e; --danger-soft:#fbe7e5; --warn:#9a5b00; --warn-soft:#fdf0dc; --ok:#1b7a43;
+  --tint:#f4f6fa;
+  --f-display:"Barlow Condensed","Arial Narrow",Arial,sans-serif;
+  --f-body:"Source Sans 3",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
+  --hh:98px;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0b101b; --panel:#131a29; --ink:#e7ebf4; --muted:#9aa5bc; --line:#26304a;
+    --brand:#0a1630; --primary:#82a8ff; --gold:#f0be2e; --gold-soft:#2a2410; --on-gold:#1a1400;
+    --danger:#ff8a80; --danger-soft:#33181a; --warn:#ffbf6b; --warn-soft:#2e2310; --ok:#5fd08e;
+    --tint:#0f1522; color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0b101b; --panel:#131a29; --ink:#e7ebf4; --muted:#9aa5bc; --line:#26304a;
+  --brand:#0a1630; --primary:#82a8ff; --gold:#f0be2e; --gold-soft:#2a2410; --on-gold:#1a1400;
+  --danger:#ff8a80; --danger-soft:#33181a; --warn:#ffbf6b; --warn-soft:#2e2310; --ok:#5fd08e;
+  --tint:#0f1522; color-scheme:dark;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:calc(var(--hh) + 16px)}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 var(--f-body)}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);background:var(--brand);z-index:60}
+a{color:var(--primary)}
+:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+
+/* Header */
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:50;background:var(--brand);color:#fff;border-bottom:3px solid var(--gold)}
+.in{max-width:1240px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.top-in{height:56px;display:flex;align-items:center;gap:12px}
+.brand{display:flex;align-items:center;gap:10px;min-width:0;font-family:var(--f-display);font-weight:700;letter-spacing:.04em;text-transform:uppercase;font-size:1.3rem;white-space:nowrap;color:#fff;text-decoration:none}
+.brand b{background:var(--gold);color:var(--on-gold);padding:1px 9px;letter-spacing:.1em}
+.brand span{opacity:.9}
+.search{flex:1;min-width:0;max-width:440px;margin-left:auto}
+.search input{width:100%;padding:8px 14px;border-radius:6px;border:1px solid rgba(255,255,255,.25);background:rgba(255,255,255,.12);color:#fff;font:inherit;font-size:.95rem}
+.search input::placeholder{color:rgba(255,255,255,.7)}
+.search input:focus{background:rgba(255,255,255,.2);outline-color:var(--gold)}
+.btn-ghost{background:transparent;color:#fff;border:1px solid rgba(255,255,255,.3);border-radius:6px;padding:7px 12px;font:600 .85rem var(--f-body);cursor:pointer;white-space:nowrap}
+.btn-ghost:hover{background:rgba(255,255,255,.14)}
+.pages{display:flex;align-items:stretch;gap:4px;height:36px;overflow-x:auto}
+.pages a{display:flex;align-items:center;padding:0 14px;color:rgba(255,255,255,.78);text-decoration:none;font:600 .9rem var(--f-body);white-space:nowrap;border-bottom:3px solid transparent;margin-bottom:-3px}
+.pages a:hover{color:#fff}
+.pages a.on{color:#fff;border-bottom-color:var(--gold)}
+#navBtn{display:none;margin-left:auto;align-self:center;padding:4px 10px}
+
+/* Layout */
+.wrap{display:grid;grid-template-columns:220px minmax(0,1fr);gap:36px;max-width:1240px;margin:0 auto;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:28px 64px}
+.wrap.solo{grid-template-columns:minmax(0,1fr)}
+.nav{position:sticky;top:calc(var(--hh) + env(safe-area-inset-top,0px) + 24px);align-self:start;display:flex;flex-direction:column;border-left:2px solid var(--line)}
+.nav a{padding:8px 14px;margin-left:-2px;border-left:2px solid transparent;color:var(--muted);text-decoration:none;font-weight:600;font-size:.95rem}
+.nav a:hover{color:var(--ink)}
+.nav a.on{color:var(--ink);border-left-color:var(--gold);background:linear-gradient(90deg,var(--gold-soft),transparent)}
+main{min-width:0;display:flex;flex-direction:column;gap:44px}
+.view{display:none;flex-direction:column;gap:44px}
+.view.on{display:flex}
+body.searching .view{display:flex}
+
+/* Page heads */
+.pagehead h1,.intro h1{font-family:var(--f-display);font-weight:700;font-size:clamp(2.2rem,5vw,3.4rem);line-height:1;margin:0 0 10px;text-transform:uppercase;letter-spacing:.02em;text-wrap:balance}
+.pagehead p,.intro p{margin:0;max-width:62ch;color:var(--muted)}
+.ref{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:1px;margin:22px 0 0;background:var(--line);border:1px solid var(--line)}
+.ref div{background:var(--panel);padding:12px 14px;min-width:0}
+.ref dt{font-size:.78rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
+.ref dd{margin:2px 0 0;font:500 1.5rem/1.2 var(--f-mono);font-variant-numeric:tabular-nums}
+.ref dd small{font:400 .8rem var(--f-body);color:var(--muted);display:block;margin-top:2px}
+
+/* Home */
+.doors{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px}
+.door{display:flex;flex-direction:column;gap:6px;padding:22px;background:var(--brand);color:#fff;text-decoration:none;border-bottom:5px solid var(--gold);min-width:0}
+.door:hover{filter:brightness(1.15)}
+.door h2{font-family:var(--f-display);font-size:1.8rem;text-transform:uppercase;letter-spacing:.03em;margin:0;border:0;padding:0}
+.door p{margin:0;opacity:.85}
+.door small{font:500 .8rem var(--f-mono);color:var(--gold);margin-top:6px}
+.quick h3{font-family:var(--f-display);text-transform:uppercase;letter-spacing:.04em;font-size:1.2rem;margin:0 0 10px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{background:var(--panel);color:var(--ink);border:1px solid var(--line);padding:8px 14px;font:600 .92rem var(--f-body);cursor:pointer;border-radius:4px}
+.chip:hover{border-color:var(--gold)}
+
+/* Sections */
+section h2{font-family:var(--f-display);font-weight:700;font-size:1.9rem;text-transform:uppercase;letter-spacing:.04em;margin:0 0 14px;padding-bottom:8px;border-bottom:3px solid var(--gold)}
+.stack{display:flex;flex-direction:column;gap:14px}
+.block{background:var(--panel);border:1px solid var(--line);border-radius:4px;padding:18px 20px;min-width:0}
+.block h3{font-family:var(--f-display);font-size:1.25rem;font-weight:600;letter-spacing:.03em;text-transform:uppercase;margin:0 0 8px}
+.block p{margin:0 0 10px}
+.block p:last-child{margin-bottom:0}
+.block ul,.block ol{margin:6px 0 0;padding-left:22px}
+.block li{margin-bottom:6px}
+.block.alert{border-left:6px solid var(--danger);background:var(--danger-soft)}
+.block.caution{border-left:6px solid var(--warn);background:var(--warn-soft)}
+.note{color:var(--muted);font-size:.92rem}
+.no{color:var(--danger);font-weight:600}
+mark{background:var(--gold);color:var(--on-gold);padding:0 2px;border-radius:2px}
+
+.cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:14px}
+.cols>*{min-width:0}
+.cell{background:var(--panel);border:1px solid var(--line);border-radius:4px;padding:16px 18px}
+.cell .tag{font:500 1.35rem var(--f-mono);display:block;margin-bottom:2px}
+.cell p{margin:0}
+
+/* Radio */
+.tablewrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;min-width:420px}
+th,td{text-align:left;padding:9px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:.78rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
+td:first-child{font-family:var(--f-mono);font-weight:500;white-space:nowrap}
+.log{margin-top:12px;border:1px solid var(--line);background:var(--tint);font-family:var(--f-mono);font-size:.9rem}
+.log div{display:grid;grid-template-columns:110px minmax(0,1fr);gap:10px;padding:8px 12px;border-bottom:1px solid var(--line)}
+.log div:last-child{border-bottom:0}
+.log b{color:var(--primary)}
+.log .c b{color:var(--gold)}
+@media(max-width:560px){.log div{grid-template-columns:1fr;gap:0}}
+.fmt{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1px;background:var(--line);border:1px solid var(--line);margin:8px 0 12px}
+.fmt div{background:var(--tint);padding:12px 14px;font:500 1.05rem var(--f-mono)}
+.fmt small{display:block;font:600 .72rem var(--f-body);text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:2px}
+@media(max-width:560px){.fmt{grid-template-columns:1fr}}
+.dialog{list-style:none;padding:0!important;display:grid;gap:8px}
+.dialog li{display:grid;grid-template-columns:120px minmax(0,1fr);gap:12px;align-items:baseline;padding:10px 12px;background:var(--tint);border:1px solid var(--line);margin:0}
+.dialog b{font:600 .78rem var(--f-body);text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
+.dialog span{font-family:var(--f-mono);font-size:.95rem}
+@media(max-width:560px){.dialog li{grid-template-columns:1fr;gap:2px}}
+.out{font-family:var(--f-mono);font-size:.95rem;margin:0 0 12px;padding:0;list-style:none;display:grid;gap:6px}
+.out li{margin:0;padding:8px 12px;background:var(--tint);border:1px solid var(--line);overflow-wrap:anywhere}
+
+/* Details */
+details.block summary{cursor:pointer;font-family:var(--f-display);font-size:1.25rem;font-weight:600;text-transform:uppercase;letter-spacing:.03em;list-style:none;display:flex;justify-content:space-between;gap:12px}
+details.block summary::-webkit-details-marker{display:none}
+details.block summary::after{content:"+";font-family:var(--f-mono);color:var(--gold)}
+details.block[open] summary::after{content:"−"}
+details.block[open] summary{margin-bottom:10px}
+
+/* Weapons */
+.rules{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px;margin-top:6px}
+.rule{display:grid;grid-template-columns:36px minmax(0,1fr);gap:12px;padding:14px;background:var(--tint);border:1px solid var(--line)}
+.rule i{font:700 1.2rem var(--f-mono);font-style:normal;width:36px;height:36px;background:var(--gold);color:var(--on-gold);display:grid;place-items:center}
+.rule p{color:var(--muted);font-size:.92rem;margin-top:4px!important}
+.cev{list-style:none;padding:0!important;display:grid;gap:8px}
+.cev li{display:grid;grid-template-columns:40px minmax(0,1fr);gap:12px;align-items:start;margin:0}
+.cev b{font:700 1.3rem var(--f-mono);width:40px;height:36px;display:grid;place-items:center;background:var(--brand);color:#fff}
+
+/* Checklist */
+.steps{list-style:none;padding:0!important;display:grid;gap:8px;counter-reset:s}
+.steps li{counter-increment:s;margin:0}
+.steps label{display:grid;grid-template-columns:30px 22px minmax(0,1fr);gap:10px;align-items:start;padding:10px 12px;background:var(--tint);border:1px solid var(--line);cursor:pointer}
+.steps label::before{content:counter(s);font:700 .85rem var(--f-mono);width:30px;height:24px;display:grid;place-items:center;background:var(--brand);color:#fff}
+.steps label:hover{border-color:var(--gold)}
+.steps input{width:18px;height:18px;margin:3px 0 0;accent-color:var(--gold)}
+.steps input:checked ~ span{opacity:.5;text-decoration:line-through}
+.stepsbar{display:flex;align-items:center;gap:14px;margin-top:14px;flex-wrap:wrap}
+.meter{flex:1;min-width:80px;height:8px;background:var(--line);overflow:hidden}
+.meter i{display:block;height:100%;width:0;background:var(--gold);transition:width .2s}
+#stepsCount{font:500 .9rem var(--f-mono);font-variant-numeric:tabular-nums}
+
+/* Buttons + forms */
+.btn{background:var(--primary);color:#fff;border:0;border-radius:4px;padding:9px 16px;font:600 .95rem var(--f-body);cursor:pointer;text-decoration:none;display:inline-block}
+:root[data-theme="dark"] .btn{color:#0b101b}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .btn{color:#0b101b}}
+.btn.line{background:transparent;color:var(--primary);border:1px solid var(--primary)}
+.btn:hover{filter:brightness(1.1)}
+.fields{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin-bottom:14px}
+.fields label{display:flex;flex-direction:column;gap:3px;font-size:.78rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);min-width:0}
+.fields input{font:1rem var(--f-body);text-transform:none;letter-spacing:0;padding:8px 10px;border:1px solid var(--line);background:var(--panel);color:var(--ink);border-radius:4px;min-width:0;width:100%}
+blockquote{margin:0 0 14px;padding:14px 18px;background:var(--tint);border-left:5px solid var(--gold);font-size:1.02rem}
+.row{display:flex;gap:10px;flex-wrap:wrap}
+
+/* Codes radio */
+.codes{list-style:none;margin:0!important;padding:0!important;display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,320px),1fr));gap:0 28px}
+.codes li{display:grid;grid-template-columns:70px minmax(0,1fr);gap:12px;align-items:center;padding:9px 0;margin:0!important;border-bottom:1px solid var(--line)}
+.codes b{font:600 .95rem var(--f-mono);font-variant-numeric:tabular-nums;text-align:center;padding:5px 0;background:var(--brand);color:#fff}
+.codes.gold b{background:var(--gold);color:var(--on-gold)}
+.codes li.red b{background:var(--danger-soft);color:var(--danger);box-shadow:inset 0 0 0 1px var(--danger)}
+.codes li.red span{color:var(--danger);font-weight:600}
+.lvl{display:inline-block;font:600 .95rem var(--f-mono);padding:4px 12px;white-space:nowrap}
+.lvl.l1{background:var(--brand);color:#fff}
+.lvl.l2{background:var(--gold);color:var(--on-gold)}
+.lvl.l3{background:var(--danger-soft);color:var(--danger);box-shadow:inset 0 0 0 1px var(--danger)}
+/* Règlement */
+.rl{list-style:none;margin:0!important;padding:0!important}
+.rl li{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;padding:11px 0;margin:0!important;border-bottom:1px solid var(--line)}
+.rl li:last-child{border-bottom:0}
+.rl li span{min-width:0}
+.tg{font:600 .72rem var(--f-mono);font-style:normal;text-transform:uppercase;letter-spacing:.03em;padding:3px 9px;white-space:nowrap;flex:none;margin-top:2px}
+.tg.fire{background:var(--danger-soft);color:var(--danger);box-shadow:inset 0 0 0 1px var(--danger)}
+.tg.susp{background:var(--warn-soft);color:var(--warn);box-shadow:inset 0 0 0 1px var(--warn)}
+.tg.sanc{background:var(--tint);color:var(--muted);box-shadow:inset 0 0 0 1px var(--line)}
+@media(max-width:560px){.rl li{flex-direction:column;gap:6px}}
+#navBtn{position:sticky;right:0;background:var(--brand)}
+.empty{padding:30px 0;color:var(--muted);text-align:center}
+footer{color:var(--muted);font-size:.85rem;border-top:1px solid var(--line);padding-top:16px}
+.hidden{display:none!important}
+
+@media(max-width:900px){
+  .wrap{grid-template-columns:minmax(0,1fr);padding-block:20px 56px}
+  #navBtn{display:block}
+  .brand span{display:none}
+  .nav{position:fixed;z-index:45;left:0;right:0;top:calc(var(--hh) + env(safe-area-inset-top,0px));max-height:60vh;overflow:auto;background:var(--panel);border:0;border-bottom:3px solid var(--gold);box-shadow:0 12px 24px rgba(0,0,0,.25);display:none;padding:8px max(16px,env(safe-area-inset-right,0px)) 8px max(16px,env(safe-area-inset-left,0px))}
+  .nav.open{display:flex}
+  .nav a{margin-left:0}
+}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.meter i{transition:none}}
+</style>
+
+<header class="top">
+  <div class="in">
+    <div class="top-in">
+      <a class="brand" href="#accueil"><b>SASP</b><span>Portail du service</span></a>
+      <div class="search"><input id="search" type="search" placeholder="Rechercher : fouille, Miranda, Henry…" autocomplete="off" aria-label="Rechercher dans tout le site"></div>
+      <button id="themeBtn" class="btn-ghost" type="button">Thème</button>
+    </div>
+    <nav class="pages" aria-label="Pages">
+      <a href="#accueil" data-page="accueil">Accueil</a>
+      <a href="#procedures" data-page="procedures">Procédures</a>
+      <a href="#codes-radio" data-page="codes-radio">Codes radio</a>
+      <a href="#formation-radio" data-page="formation-radio">Formation radio</a>
+      <a href="#reglement" data-page="reglement">Règlement</a>
+      <button id="navBtn" class="btn-ghost" type="button" aria-expanded="false" aria-controls="nav">Sections</button>
+    </nav>
+  </div>
+</header>
+
+<div class="wrap solo" id="wrap">
+  <nav class="nav" id="nav" aria-label="Sections de la page" hidden></nav>
+
+  <main>
+    <p id="empty" class="empty" hidden>Aucun résultat. Essayez un autre mot, par exemple « arme » ou « radio ».</p>
+
+    <!-- ================= ACCUEIL ================= -->
+    <div class="view" id="v-accueil" data-view="accueil">
+      <section class="intro" id="accueil">
+        <h1>San Andreas State Police</h1>
+        <p>Le portail interne du SASP. Retrouvez les procédures de terrain et les formations du service, avec une recherche qui couvre tout le site.</p>
+        <dl class="ref">
+          <div><dt>Argent à vérifier</dt><dd>5 000 $<small>au-delà, contrôler la déclaration</small></dd></div>
+          <div><dt>Drogue sans poursuite</dt><dd>&lt; 5 g<small>retrait de la substance</small></dd></div>
+          <div><dt>Distance de sécurité</dt><dd>5–7 m<small>arme pointée</small></dd></div>
+          <div><dt>Avant le Taser</dt><dd>3<small>avertissements oraux</small></dd></div>
+          <div><dt>Ravitaillement Henry</dt><dd>15 min<small>en intervention</small></dd></div>
+        </dl>
+      </section>
+
+      <section id="portes" class="doors">
+        <a class="door" href="#procedures">
+          <h2>Procédures</h2>
+          <p>Appels, patrouilles, radio, fouille, armement, arrestation et droits Miranda.</p>
+          <small>9 sections</small>
+        </a>
+        <a class="door" href="#formation-radio">
+          <h2>Formation radio</h2>
+          <p>Parler à la radio, ouvrir la discussion, gérer les communications prioritaires.</p>
+          <small>4 chapitres + outil de message</small>
+        </a>
+        <a class="door" href="#codes-radio">
+          <h2>Codes radio</h2>
+          <p>Les codes 10-xx de communication et d'intervention, les niveaux de priorité et les rappels.</p>
+          <small>38 codes + Code 1 / 2 / 3</small>
+        </a>
+        <a class="door" href="#reglement">
+          <h2>Règlement</h2>
+          <p>Le règlement intérieur, les sanctions encourues et les obligations de chaque agent.</p>
+          <small>25 règles + 19 obligations</small>
+        </a>
+      </section>
+
+      <section class="quick" id="acces">
+        <h3>Accès direct</h3>
+        <div class="chips">
+          <button class="chip" type="button" data-go="procedures:arrestation">Arrestation</button>
+          <button class="chip" type="button" data-go="procedures:miranda">Droits Miranda</button>
+          <button class="chip" type="button" data-go="procedures:procedures-fouille">Fouille</button>
+          <button class="chip" type="button" data-go="procedures:armement">Armement</button>
+          <button class="chip" type="button" data-go="codes-radio:intervention">Codes intervention</button>
+          <button class="chip" type="button" data-go="reglement:interieur">Règlement intérieur</button>
+          <button class="chip" type="button" data-go="formation-radio:dialogue">Dialogue radio</button>
+        </div>
+      </section>
+    </div>
+
+    <!-- ================= PROCEDURES ================= -->
+    <div class="view" id="v-procedures" data-view="procedures">
+      <header class="pagehead">
+        <h1>Procédures</h1>
+        <p>Les règles du service, section par section. Utilisez le menu pour sauter à une partie.</p>
+      </header>
+
+      <section id="appels" data-title="Appels">
+        <h2>Appels</h2>
+        <div class="stack">
+          <div class="block" data-block>
+            <h3>Appel émis par des citoyens</h3>
+            <p>Les citoyens qui appellent ont besoin d'une intervention <strong>rapide et efficace</strong>. Une seule patrouille peut leur venir en aide. Du renfort peut être demandé si la situation l'exige.</p>
+          </div>
+        </div>
+      </section>
+
+      <section id="patrouilles" data-title="Patrouilles">
+        <h2>Patrouille de repérage</h2>
+        <div class="stack">
+          <div class="cols" data-block>
+            <div class="cell"><span class="tag">Lincoln</span><p>Patrouille <strong>seul(e)</strong>.</p></div>
+            <div class="cell"><span class="tag">Adam</span><p>Patrouille en <strong>duo</strong>.</p></div>
+            <div class="cell"><span class="tag">Tango</span><p>Patrouille à <strong>3 personnes ou plus</strong>.</p></div>
+          </div>
+          <div class="block caution" data-block>
+            <p>Le code <strong>Lincoln</strong> est interdit aux grades inférieurs à « Agent de 2ème classe », sauf autorisation d'un Haut-Gradé.</p>
+          </div>
+          <div class="block" data-block>
+            <p>Seul un <strong>Haut-Gradé</strong> est qualifié pour mettre en place un dispatch.</p>
+          </div>
+          <div class="block" data-block>
+            <h3>Henry, l'hélicoptère de service</h3>
+            <ul>
+              <li>Utilisable <strong>uniquement sur autorisation d'un Haut-Gradé</strong>.</li>
+              <li>Le <strong>permis de vol</strong> est obligatoire. Il est disponible dès le grade « Lieutenant ».</li>
+              <li>Le Henry doit être <strong>ravitaillé toutes les 15 minutes</strong> d'utilisation en intervention.</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section id="radio" data-title="Radio">
+        <h2>Radio</h2>
+        <div class="stack">
+          <div class="block" data-block>
+            <h3>Règlement</h3>
+            <ul>
+              <li>Uniquement pour les appels de renfort, les informations importantes et les prises de patrouille.</li>
+              <li class="no">Il est interdit de raconter sa vie, sous peine de sanction.</li>
+              <li>Soyez professionnels : transmissions claires et rapides.</li>
+              <li>Avant de transmettre, <strong>donnez votre matricule</strong>.</li>
+              <li>Les personnes à la radio sont obligatoirement <strong>en service</strong>.</li>
+            </ul>
+            <p class="note" style="margin-top:10px">Pour apprendre à structurer vos messages, voir la <a href="#formation-radio">formation radio</a>. La liste des 10-xx est sur la page <a href="#codes-radio">Codes radio</a>.</p>
+          </div>
+          <div class="block" data-block>
+            <h3>Expressions radio</h3>
+            <div class="tablewrap">
+              <table>
+                <thead><tr><th>Expression</th><th>Signification</th></tr></thead>
+                <tbody>
+                  <tr><td>Affirmatif !</td><td>Oui</td></tr>
+                  <tr><td>Négatif !</td><td>Non</td></tr>
+                  <tr><td>Transmettez !</td><td>J'ai bien reçu votre demande de communication et je suis à l'écoute</td></tr>
+                  <tr><td>Message prioritaire !</td><td>Demande pour interrompre une communication en cours afin de passer un message urgent</td></tr>
+                  <tr><td>Bien pris !</td><td>L'information a été reçue</td></tr>
+                  <tr><td>Rectification !</td><td>Correction du message précédent</td></tr>
+                  <tr><td>ShotFire !</td><td>Tir près de la position de l'émetteur (fusillade)</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="block" data-block>
+            <h3>Formule de transmission</h3>
+            <ol>
+              <li>Titre de la patrouille (Adam 30, Tango 11, Henry 6…)</li>
+              <li>Destinataire (Centrale ou Agent)</li>
+            </ol>
+            <p class="note" style="margin-top:8px">Le titre se compose du type de patrouille et du matricule de l'agent le plus haut-gradé, ou de l'agent qui transmet.</p>
+            <p>Lors d'un <strong>10-56</strong> (refus d'obtempérer) ou d'un <strong>10-57</strong> (délit de fuite), annoncez le <strong>nombre d'occupants</strong> et décrivez précisément le véhicule.</p>
+            <div class="log">
+              <div><b>ADAM 09</b><span>« ADAM 09 pour Centrale »</span></div>
+              <div class="c"><b>CENTRALE</b><span>« Centrale à l'écoute »</span></div>
+              <div><b>ADAM 09</b><span>« Besoin de renfort, nous avons un 10-56 sur Vespucci Boulevard direction Est, une voiture cinq portes de couleur rouge, occupée par trois individus, immatriculée ILD 546. Terminé. »</span></div>
+              <div class="c"><b>CENTRALE</b><span>« Bien pris, des unités se dirigent vers votre direction »</span></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="procedures-fouille" data-title="Procédures">
+        <h2>Procédures</h2>
+        <div class="stack">
+          <details class="block" data-block open>
+            <summary>Fouille</summary>
+            <ul>
+              <li><strong>Plus de 5 000 $ :</strong> vérifiez que l'argent a été déclaré (argent sale = argent non déclaré). Si la provenance est inconnue, suivez la procédure d'arrestation et d'amende pour argent sale. Le suspect pourra justifier la provenance lors de son procès, s'il en souhaite un.</li>
+              <li><strong>Substances illicites :</strong> faites des analyses au laboratoire. Moins de 5 g : aucune poursuite, mais retirez la drogue.</li>
+              <li><strong>Objet illégal :</strong> retirez-le immédiatement.</li>
+              <li><strong>Arme à feu légale :</strong> vérifiez le <strong>PPA</strong>. S'il est valide, l'arme est rendue à la fin de la GAV, sauf chef d'inculpation demandant son retrait.</li>
+              <li><strong>Autres armes ou objets illégaux :</strong> confiscation obligatoire, puis amende selon l'objet ou l'arme détenu.</li>
+            </ul>
+            <p class="note" style="margin-top:10px">La <strong>tentative de meurtre</strong> s'applique uniquement si l'individu tire sur un agent avec une arme à feu chargée de munitions. Sinon, il s'agit d'une « Agression sur agent de l'État ».</p>
+          </details>
+          <details class="block" data-block>
+            <summary>Rapports</summary>
+            <p><strong>Rapports d'intervention :</strong> pour les interventions diverses (fusillades, incidents, scènes de violence, appels…). Ils ne sont pas obligatoires, mais peuvent servir, par exemple pour une enquête.</p>
+          </details>
+          <details class="block" data-block>
+            <summary>Gyrophare</summary>
+            <p>Le gyrophare s'utilise <strong>seulement lors d'interventions</strong>.</p>
+          </details>
+          <details class="block" data-block>
+            <summary>Amender</summary>
+            <p>Référez-vous au code de la route de Los Santos.</p>
+            <a class="btn" target="_blank" rel="noopener" href="https://docs.google.com/spreadsheets/d/1NHWHVuyfVMZB9r7yto3ZGISm_KMKu8pT-psgN9OQsMs/edit?usp=sharing">Ouvrir le code de la route</a>
+          </details>
+          <details class="block" data-block>
+            <summary>Menotter</summary>
+            <p>Un agent peut menotter une personne <strong>seulement si elle est non coopérative</strong>.</p>
+          </details>
+        </div>
+      </section>
+
+      <section id="armement" data-title="Armement">
+        <h2>Formation armement</h2>
+        <div class="stack">
+          <div class="block" data-block>
+            <h3>Les 4 règles de sécurité</h3>
+            <div class="rules">
+              <div class="rule"><i>1</i><div><strong>Toutes les armes sont toujours considérées comme chargées.</strong><p>Aucune exception. La plupart des accidents surviennent avec des armes soi-disant vides.</p></div></div>
+              <div class="rule"><i>2</i><div><strong>Ne jamais pointer le canon sur quelqu'un ou quelque chose que l'on ne veut pas toucher.</strong><p>Dire que l'arme n'est pas chargée ne change rien : voir règle 1.</p></div></div>
+              <div class="rule"><i>3</i><div><strong>Garder le doigt hors de la détente tant que les organes de visée ne sont pas sur l'objectif.</strong><p>Sous stress, les mains se crispent et le coup peut partir seul.</p></div></div>
+              <div class="rule"><i>4</i><div><strong>Être sûr de son objectif et de son environnement.</strong><p>Détecter, identifier, traiter. Attention aux ricochets, aux tirs manqués et à la perforation. Le tireur répond de chacun de ses tirs.</p></div></div>
+            </div>
+          </div>
+          <div class="block" data-block>
+            <h3>C.E.V.I.T.A.L., le tir en 7 temps</h3>
+            <ol class="cev">
+              <li><b>C</b><span><strong>Certitude</strong> d'identification de la cible.</span></li>
+              <li><b>E</b><span><strong>Élévation</strong> de l'arme, pour retrouver les organes de visée au niveau des yeux.</span></li>
+              <li><b>V</b><span><strong>Visée</strong> : organes de visée ou optique alignés sur l'objectif.</span></li>
+              <li><b>I</b><span><strong>Index</strong> sur la détente, uniquement quand la visée est alignée.</span></li>
+              <li><b>T</b><span><strong>Tir</strong> : pression continue sur la détente jusqu'au départ du coup.</span></li>
+              <li><b>A</b><span><strong>Analyse</strong> du but : index le long du fût, arme baissée à 45°, vérifier si l'objectif est traité, puis décider de reprendre le tir ou non.</span></li>
+              <li><b>L</b><span><strong>Latéral</strong> : balayer du regard pour détecter une autre menace et s'assurer de la présence des équipiers.</span></li>
+            </ol>
+          </div>
+          <div class="block caution" data-block>
+            <h3>Utilisation d'une arme</h3>
+            <ul>
+              <li>Armes létales autorisées <strong>uniquement en légitime défense</strong> : défense directe et proportionnelle, danger immédiat.</li>
+              <li>Si quelqu'un menace votre vie, celle d'un agent ou d'un citoyen avec une arme létale, vous pouvez répondre avec une arme létale.</li>
+              <li><strong>Arme blanche :</strong> privilégiez le Taser ou la matraque, ou essayez de raisonner la personne.</li>
+              <li><strong>Véhicule utilisé contre vous :</strong> usage de la force possible, en surveillant votre environnement.</li>
+              <li>Avant toute arme létale, <strong>annoncez-vous et faites vos 3 sommations orales</strong>. Sans les 3 sommations, vous êtes sanctionné. Visez les zones non mortelles (épaules, jambes…).</li>
+              <li>Respectez les 4 règles de sécurité.</li>
+              <li>Arme pointée sur une personne dangereuse ou menaçante : gardez environ <strong>5 à 7 mètres</strong>.</li>
+              <li>Le Taser est fortement recommandé, après <strong>trois avertissements oraux</strong>.</li>
+            </ul>
+          </div>
+          <div class="cols" data-block>
+            <div class="cell"><span class="tag">Taser</span><p>Stopper une personne menaçante <strong>sans arme blanche</strong>.</p></div>
+            <div class="cell"><span class="tag">9 mm</span><p>Votre vie est menacée par un ou plusieurs individus <strong>armés</strong>.</p></div>
+            <div class="cell"><span class="tag">Fusil d'assaut</span><p>Sur <strong>ordre d'un Haut-Gradé</strong> : convoi, blocage de douane. Les Haut-Gradés peuvent le porter en permanence.</p></div>
+          </div>
+        </div>
+      </section>
+
+      <section id="coma" data-title="Hôpital / Coma">
+        <h2>Hôpital / Coma</h2>
+        <div class="block alert" data-block>
+          <h3>Suspect gravement blessé</h3>
+          <p>Il est <strong>strictement interdit de fouiller une personne dans le coma</strong>. Appelez les <strong>EMS</strong> pour l'emmener à l'hôpital. Une fois le suspect réanimé, opéré et soigné, reprenez la procédure d'arrestation.</p>
+        </div>
+      </section>
+
+      <section id="perimetre" data-title="Périmètres">
+        <h2>Périmètres de sécurité</h2>
+        <div class="block" data-block>
+          <ul>
+            <li>Obtenez d'abord l'autorisation d'un <strong>plus gradé</strong> (pas forcément un Haut-Gradé).</li>
+            <li>Les agents missionnés balisent et sécurisent la zone avec des <strong>barrières et des plots</strong>.</li>
+            <li class="no">Les herses ne doivent pas servir pour cette manœuvre.</li>
+            <li>Une fois le périmètre posé, écartez les citoyens qui veulent le franchir pour que les agents et les personnes concernées travaillent dans de bonnes conditions.</li>
+          </ul>
+        </div>
+      </section>
+
+      <section id="arrestation" data-title="Arrestation">
+        <h2>Arrestation</h2>
+        <div class="block" data-block data-nohl>
+          <p>Toute personne qui commet un crime ou un délit est arrêtée, puis conduite au poste SASP le plus proche. Les <a href="#procedures" data-go="procedures:miranda">droits Miranda</a> lui sont lus au préalable. Cochez les étapes au fil de l'intervention.</p>
+          <ol class="steps" id="steps">
+            <li><label><input type="checkbox"><span>Placez la personne face à un mur ou un véhicule, bras levés. Si elle est hostile ou menaçante, vous pouvez la menotter.</span></label></li>
+            <li><label><input type="checkbox"><span><strong>Palpation de sécurité</strong>, pas une fouille. Arme de classe 2 ou 3 : confiscation. Autre type d'arme : confiscation officieuse.</span></label></li>
+            <li><label><input type="checkbox"><span>Lecture des droits Miranda (possible aussi au poste). Tout oubli entraîne un <strong>vice de procédure</strong>.</span></label></li>
+            <li><label><input type="checkbox"><span>Demandez s'il veut exercer un de ses droits et appelez le ou les services demandés. Si un avocat est présent, appelez le <strong>Procureur</strong> pour défendre les services publics.</span></label></li>
+            <li><label><input type="checkbox"><span>Installez-le à l'arrière d'un de nos véhicules 4 places.</span></label></li>
+            <li><label><input type="checkbox"><span>Au poste : direction les casiers, il dépose toutes ses affaires, puis <strong>fouille approfondie</strong> de l'individu et de son casier.</span></label></li>
+            <li><label><input type="checkbox"><span>Direction la salle du casier judiciaire. Restez derrière lui pour éviter toute rébellion.</span></label></li>
+            <li><label><input type="checkbox"><span>Photo (haut du torse et visage), puis demande de la carte d'identité. <strong>Seulement s'il n'en a pas</strong> : empreintes et impression d'une nouvelle carte.</span></label></li>
+            <li><label><input type="checkbox"><span>Créez son casier judiciaire sur la MDT, placez-le dans une cellule libre, donnez-lui un <strong>bipeur</strong> et demandez-lui s'il veut exercer un de ses droits. Vous pouvez ensuite reprendre votre activité.</span></label></li>
+            <li><label><input type="checkbox"><span><strong>Amende :</strong> pour la durée de GAV, prenez la plus élevée, <u>jamais additionnées</u>. Pour l'amende, <u>cumulez-les</u> et appliquez-la une fois en cellule.</span></label></li>
+            <li><label><input type="checkbox"><span>Fin de GAV : sortez-le et rendez-lui les affaires déposées dans son casier.</span></label></li>
+          </ol>
+          <div class="stepsbar">
+            <span id="stepsCount">0 / 11</span>
+            <div class="meter"><i id="meterFill"></i></div>
+            <button class="btn line" id="resetSteps" type="button">Réinitialiser</button>
+          </div>
+        </div>
+      </section>
+
+      <section id="miranda" data-title="Droits Miranda">
+        <h2>Droits Miranda</h2>
+        <div class="block" data-block data-nohl>
+          <p class="note">Renseignez les champs pour personnaliser le texte, ou copiez-le tel quel.</p>
+          <div class="fields">
+            <label for="mNom">Nom<input id="mNom" type="text" placeholder="X" autocomplete="off"></label>
+            <label for="mMotif">Motif<input id="mMotif" type="text" placeholder="X" autocomplete="off"></label>
+            <label for="mDate">Date<input id="mDate" type="text" placeholder="jj/mm/aaaa" autocomplete="off"></label>
+            <label for="mHeure">Heure<input id="mHeure" type="text" placeholder="hh" autocomplete="off"></label>
+          </div>
+          <blockquote id="mirandaText">Monsieur X, vous êtes en état d'arrestation pour X le ../../.... à ..h… Vous avez le droit de garder le silence. Si vous renoncez à ce droit, tout ce que vous direz pourra être et sera utilisé contre vous devant une cour de justice. Vous avez le droit à un avocat et d'avoir un avocat présent lors de l'interrogatoire. Si vous n'en avez pas les moyens, un avocat vous sera commis d'office s'il y en a un en ville. Durant chaque interrogatoire, vous pourrez décider à n'importe quel moment d'exercer ces droits, de ne répondre à aucune question ou de ne faire aucune déposition. Durant votre GAV, vous pourrez bénéficier de soins ainsi que de nourriture et d'eau. Si aucun avocat ni aucun médecin n'est présent en ville, la procédure suivra son cours. Avez-vous bien compris les droits que je viens de vous lire ?</blockquote>
+          <div class="row">
+            <button class="btn" id="copyMiranda" type="button">Copier le texte</button>
+            <button class="btn line" id="nowBtn" type="button">Date et heure actuelles</button>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- ================= CODES RADIO ================= -->
+    <div class="view" id="v-codes-radio" data-view="codes-radio">
+      <header class="pagehead">
+        <h1>Codes radio</h1>
+        <p>Communications officielles du SASP. Les codes en rouge sont des priorités absolues. En cas de doute, demandez confirmation.</p>
+      </header>
+
+      <section id="communication" data-title="Communication">
+        <h2>Codes de communication</h2>
+        <div class="block" data-block>
+          <ul class="codes">
+            <li><b>10-3</b><span>Fin de transmission / Silence radio</span></li>
+            <li><b>10-4</b><span>Bien reçu / OK</span></li>
+            <li><b>10-5</b><span>Négatif</span></li>
+            <li><b>10-6</b><span>Occupé / Attendre avant de poursuivre sauf urgence</span></li>
+            <li><b>10-7</b><span>Hors service temporaire / Indisponible pour appel</span></li>
+            <li><b>10-8</b><span>En service / Disponible pour appel</span></li>
+            <li><b>10-9</b><span>Répéter le dernier message</span></li>
+            <li><b>10-10</b><span>Fin de service</span></li>
+            <li><b>10-14</b><span>Escorte ou convoi</span></li>
+            <li><b>10-15</b><span>Suspect détenu / Transport du prisonnier</span></li>
+            <li><b>10-17</b><span>Ajout de carburant</span></li>
+            <li><b>10-19</b><span>En route vers… (préciser la localisation)</span></li>
+            <li><b>10-20</b><span>Votre localisation</span></li>
+            <li><b>10-22</b><span>Annuler ou ignorer la transmission radio / appel</span></li>
+            <li><b>10-23</b><span>Standby / attente</span></li>
+            <li><b>10-24</b><span>Demande une transmission de voiture à voiture (Dispatch présent)</span></li>
+            <li><b>10-28</b><span>Vérification immatriculation</span></li>
+            <li><b>10-29</b><span>Vérification mandats / dossier criminel</span></li>
+            <li class="red"><b>10-31</b><span>Tirs d'armes à feu</span></li>
+            <li class="red"><b>10-35</b><span>Demande de renfort sur position de l'officier (préciser rue, etc.)</span></li>
+          </ul>
+        </div>
+      </section>
+
+      <section id="intervention" data-title="Intervention">
+        <h2>Codes d'intervention</h2>
+        <div class="block" data-block>
+          <p class="note">Dispatch et incidents.</p>
+          <ul class="codes gold">
+            <li><b>10-37</b><span>Cambriolage en cours</span></li>
+            <li><b>10-38</b><span>Contrôle routier / Traffic Stop</span></li>
+            <li><b>10-40</b><span>Braquage de supérette</span></li>
+            <li><b>10-41</b><span>Prise de patrouille</span></li>
+            <li><b>10-50</b><span>Accident (circulation par défaut, précisez si blessure corporelle)</span></li>
+            <li><b>10-51</b><span>Demande dépanneuse / Tow Truck</span></li>
+            <li><b>10-52</b><span>Demande ambulance / Paramedics</span></li>
+            <li class="red"><b>10-56</b><span>Refus d'obtempérer</span></li>
+            <li><b>10-57</b><span>Délit de fuite</span></li>
+            <li><b>10-58</b><span>Braquage d'ATM</span></li>
+            <li><b>10-59</b><span>Vol de véhicule</span></li>
+            <li><b>10-60</b><span>Vente de drogue</span></li>
+            <li><b>10-61</b><span>Braquage conteneur</span></li>
+            <li class="red"><b>10-62</b><span>Prise d'otage</span></li>
+            <li><b>10-63</b><span>Vol boîte aux lettres</span></li>
+            <li><b>10-91</b><span>Braquage de banque</span></li>
+            <li><b>10-97</b><span>Arrivé sur scène</span></li>
+            <li class="red"><b>10-99</b><span>Officier en danger</span></li>
+          </ul>
+        </div>
+      </section>
+
+      <section id="priorites" data-title="Priorités">
+        <h2>Priorités radio</h2>
+        <div class="block" data-block>
+          <div class="tablewrap">
+            <table>
+              <thead><tr><th>Niveau</th><th>Type</th><th>Ce que ça veut dire</th></tr></thead>
+              <tbody>
+                <tr><td><span class="lvl l1">Code 1</span></td><td>Sans urgence</td><td>Réponse standard, pas d'urgence.</td></tr>
+                <tr><td><span class="lvl l2">Code 2</span></td><td>Urgent</td><td>Situation urgente, pas de sirène.</td></tr>
+                <tr><td><span class="lvl l3">Code 3</span></td><td>Urgence</td><td>Utiliser la sirène et les gyrophares.</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <section id="rappels" data-title="Rappels">
+        <h2>Rappels importants</h2>
+        <div class="block" data-block>
+          <ul>
+            <li>Toujours donner un <strong>10-20 clair et précis</strong>.</li>
+            <li>Préciser la rue, la direction et un point de repère.</li>
+            <li>Rester professionnel et concis.</li>
+            <li class="no">Les codes en rouge sont des priorités absolues.</li>
+            <li>En cas de doute, demander confirmation.</li>
+          </ul>
+          <p class="note" style="margin-top:10px">Prévenir · Protéger · Servir</p>
+        </div>
+      </section>
+    </div>
+
+    <!-- ================= FORMATION RADIO ================= -->
+    <div class="view" id="v-formation-radio" data-view="formation-radio">
+      <header class="pagehead">
+        <h1>Formation communication radio</h1>
+        <p>La radio est l'un des moyens de communication du terrain. Elle diffuse une information à plusieurs personnes à la fois, au-delà de la portée de la voix.</p>
+      </header>
+
+      <section id="parler" data-title="Parler à la radio">
+        <h2>Comment parler à la radio</h2>
+        <div class="stack">
+          <div class="block" data-block>
+            <ul>
+              <li>La radio est un canal de diffusion : <strong>une seule personne parle à la fois</strong>, les autres écoutent. Occupez la fréquence le moins longtemps possible.</li>
+              <li>Chacun doit comprendre vite <strong>de quoi parle le message, à qui il s'adresse et de qui il vient</strong>.</li>
+            </ul>
+            <p style="margin-top:10px">Tout message suit donc le même ordre :</p>
+            <div class="fmt">
+              <div><small>1</small>Émetteur</div>
+              <div><small>2</small>Destinataire</div>
+              <div><small>3</small>Sujet</div>
+            </div>
+            <p class="note">Exemple du cours : « Sergent pour Commandant, En km A. »</p>
+          </div>
+        </div>
+      </section>
+
+      <section id="dialogue" data-title="Ouvrir la discussion">
+        <h2>Ouvrir la discussion</h2>
+        <div class="stack">
+          <div class="block" data-block>
+            <p>Pour passer une information précise à une personne précise, <strong>assurez-vous qu'elle est prête à vous entendre</strong>. Le dialogue s'organise en quatre temps :</p>
+            <ol class="dialog">
+              <li><b>Appel</b><span>« Sergent pour Commandant »</span></li>
+              <li><b>Réponse</b><span>« Commandant à l'écoute »</span></li>
+              <li><b>Message</b><span>« Sergent, trois hommes suspects, zip 5128 »</span></li>
+              <li><b>Confirmation</b><span>« Bien reçu »</span></li>
+            </ol>
+          </div>
+          <div class="block" data-block>
+            <h3>Message à tout le monde</h3>
+            <p>Pour diffuser à toutes les personnes sur la fréquence, <strong>ne précisez pas de destinataire</strong>.</p>
+            <ol class="dialog">
+              <li><b>Appel</b><span>« De Commandant pour toutes les unités, faites un 10-20 »</span></li>
+            </ol>
+          </div>
+          <div class="block" data-block data-nohl>
+            <h3>Composer un message</h3>
+            <p class="note">Remplissez les champs pour voir le message dans le bon format. Laissez le destinataire vide pour un message à toutes les unités. Les valeurs de départ sont des exemples.</p>
+            <div class="fields">
+              <label for="rEm">Émetteur<input id="rEm" type="text" value="Sergent" autocomplete="off"></label>
+              <label for="rDe">Destinataire<input id="rDe" type="text" value="Commandant" autocomplete="off"></label>
+              <label for="rSu">Sujet<input id="rSu" type="text" value="trois hommes suspects, zip 5128" autocomplete="off"></label>
+            </div>
+            <ul class="out" id="rOut">
+              <li>« Sergent pour Commandant »</li>
+              <li>« Commandant à l'écoute »</li>
+              <li>« Sergent, trois hommes suspects, zip 5128 »</li>
+              <li>« Bien reçu »</li>
+            </ul>
+            <button class="btn" id="rCopy" type="button">Copier la séquence</button>
+          </div>
+        </div>
+      </section>
+
+      <section id="prioritaire" data-title="Communication prioritaire">
+        <h2>Communication prioritaire</h2>
+        <div class="stack">
+          <div class="block caution" data-block>
+            <p>Quand une intervention se déclenche, <strong>la fréquence reste blanche</strong> (silencieuse) pour faciliter le dialogue entre les unités concernées.</p>
+            <ul>
+              <li>Seuls les <strong>Haut-Gradés</strong> et les <strong>leaders de l'intervention</strong> communiquent en priorité.</li>
+              <li>Les autres unités utilisent la fréquence brièvement, uniquement pour <strong>collationner un ordre</strong> reçu.</li>
+            </ul>
+          </div>
+          <div class="block" data-block>
+            <h3>Exemple : une course-poursuite</h3>
+            <p>Le Commandant, un Lieutenant et un Sergent-chef sont sur la fréquence. Un Capitaine et un Lieutenant entament une course-poursuite, et le leader de la course l'annonce à la radio.</p>
+            <ul>
+              <li>Les Haut-Gradés demandent s'il faut du renfort et organisent les dispatchs éventuels.</li>
+              <li>Le leader de la course transmet ses informations au deuxième de la course et au Haut-Gradé.</li>
+              <li>Tous les autres font <strong>silence radio</strong>. Il ne se rompt que pour collationner un ordre donné à son unité, afin de confirmer qu'il est compris.</li>
+            </ul>
+          </div>
+          <div class="block" data-block>
+            <p>Pour poser une question ou parler à quelqu'un, <strong>privilégiez l'appel téléphonique ou le SMS</strong>. Cette habitude vaut en toute circonstance, même quand la fréquence est libre.</p>
+          </div>
+        </div>
+      </section>
+
+      <section id="conclusion" data-title="Conclusion">
+        <h2>Conclusion</h2>
+        <div class="block" data-block>
+          <p>La radio n'est pas un outil facile. Chacun doit être rigoureux et respecter les règles :</p>
+          <ul>
+            <li>Ne parlez pas tout le temps pour ne rien dire.</li>
+            <li>Pour parler à deux, préférez l'appel ou la voix.</li>
+            <li>Écoutez la fréquence en permanence pour savoir ce qui se passe.</li>
+            <li>Sous stress, ne paniquez pas et n'occupez pas la radio par peur de mal faire : <strong>laissez les Haut-Gradés parler et donner les ordres</strong>.</li>
+          </ul>
+        </div>
+      </section>
+    </div>
+
+    <!-- ================= REGLEMENT ================= -->
+    <div class="view" id="v-reglement" data-view="reglement">
+      <header class="pagehead">
+        <h1>Règlement</h1>
+        <p>Le règlement intérieur du SASP et les obligations de chaque agent. Les étiquettes à droite indiquent la sanction prévue.</p>
+      </header>
+
+      <section id="interieur" data-title="Règlement intérieur">
+        <h2>Règlement intérieur</h2>
+        <div class="block" data-block>
+          <ul class="rl">
+            <li><span>Tous les agents doivent être <strong>en tenue de service</strong>.</span></li>
+            <li><span>Il faut <strong>minimum 3 civils ou une preuve vidéo</strong> pour mettre votre parole en doute.</span></li>
+            <li><span>Une <strong>mise à pied</strong> est appliquée en cas d'enquête en cours sur l'agent concerné.</span><em class="tg susp">Mise à pied</em></li>
+            <li><span>Pour tout type d'enquête, l'<strong>État-Major</strong> doit en être informé.</span></li>
+            <li><span>Toute sommation non faite (<strong>3 sommations</strong>) est sanctionnée.</span><em class="tg sanc">Sanction</em></li>
+            <li><span>Tout abus de pouvoir envers les citoyens entraîne un licenciement.</span><em class="tg fire">Licenciement</em></li>
+            <li><span>Si un citoyen demande votre nom, <strong>référez-vous à votre matricule</strong>.</span></li>
+            <li><span>Vous devez <strong>vouvoyer vos collègues</strong> de travail.</span></li>
+            <li><span>Un ordre donné et non respecté peut entraîner un licenciement, selon la situation.</span><em class="tg fire">Licenciement possible</em></li>
+            <li><span>Les armes sont rangées <strong>à l'armurerie</strong> après le service. Tout agent qui utilise ses armes hors service est licencié.</span><em class="tg fire">Licenciement</em></li>
+            <li><span>Soyez respectueux envers les citoyens : un <strong>comportement exemplaire</strong> est impératif.</span></li>
+            <li><span>Les officiers doivent <strong>superviser les Cadets</strong>.</span></li>
+            <li><span>Il est obligatoire de <strong>contacter les EMS</strong> pendant les braquages de banque et de bijouterie.</span></li>
+            <li><span>Il est interdit de fouiller des personnes sans délit.</span><em class="tg fire">Licenciement</em></li>
+            <li><span>Une <strong>absence non justifiée de 7 jours</strong> entraîne un renvoi sans solde.</span><em class="tg fire">Renvoi sans solde</em></li>
+            <li><span>Tout agent qui met en danger la vie ou la sécurité d'un autre agent, par son comportement ou ses actions, est immédiatement licencié.</span><em class="tg fire">Licenciement immédiat</em></li>
+            <li><span>À chaque arrestation, un <strong>rapport et un casier</strong> sont obligatoires. En cas d'urgence, vous avez <strong>24 heures</strong> pour les faire.</span></li>
+            <li><span>Vous devez être <strong>sous radio</strong> pendant vos services.</span></li>
+            <li><span>Après plusieurs avertissements, les agents s'exposent à un licenciement.</span><em class="tg fire">Licenciement possible</em></li>
+            <li><span>Toute règle du <strong>PPA</strong> non respectée est sanctionnée d'un retrait du PPA et de l'équipement, voire d'un licenciement selon la situation.</span><em class="tg fire">Retrait du PPA</em></li>
+            <li><span>Tout agent dont la conduite sur la route n'est pas exemplaire ou est dangereuse sera sanctionné.</span><em class="tg sanc">Sanction</em></li>
+            <li><span>Tout agent qui pollue la radio s'expose à une sanction.</span><em class="tg sanc">Sanction</em></li>
+            <li><span>Tout agent qui ne respecte pas ses tâches administratives s'expose à une sanction.</span><em class="tg sanc">Sanction</em></li>
+            <li><span>Tout acte ripoux entraîne un licenciement, puis des recherches contre l'agent.</span><em class="tg fire">Licenciement + recherche</em></li>
+            <li><span>Des règles peuvent être ajoutées au fil du temps.</span></li>
+          </ul>
+        </div>
+      </section>
+
+      <section id="obligations" data-title="Obligations de l'agent">
+        <h2>Obligations de l'agent</h2>
+        <div class="block" data-block>
+          <p>Tous les membres des forces publiques doivent :</p>
+          <ul>
+            <li>se comporter de manière professionnelle et respectueuse en toutes circonstances ;</li>
+            <li>se conformer aux lois et réglementations en vigueur dans leur pays d'exercice ;</li>
+            <li>respecter les droits et libertés fondamentaux de tous, y compris la liberté d'expression et la vie privée ;</li>
+            <li>utiliser la force de manière modérée et proportionnée, uniquement en cas de nécessité absolue ;</li>
+            <li>être transparents et rendre compte de leurs actions aux autorités compétentes ;</li>
+            <li>être responsables de leurs actes et de leurs décisions, et prêts à en assumer les conséquences ;</li>
+            <li>être ouverts aux critiques et aux suggestions de la population, et faire preuve de tolérance et de respect envers tous, quelles que soient leurs opinions ou leurs convictions ;</li>
+            <li>être responsables de leur propre comportement en tout temps, sans mettre en danger la sécurité de leurs collègues ou de la population ;</li>
+            <li>être traités équitablement et respectés par leurs supérieurs et leurs collègues, et être protégés contre toute forme de discrimination ou de harcèlement ;</li>
+            <li>être formés et entraînés de manière adéquate pour remplir leurs fonctions efficacement et professionnellement ;</li>
+            <li>s'abstenir de tout comportement discriminatoire ou sexiste envers les personnes rencontrées dans l'exercice de leurs fonctions ;</li>
+            <li>être responsables de leur propre santé et sécurité, ainsi que de celles de leurs collègues et de la population ;</li>
+            <li>respecter les protocoles de sécurité et de confidentialité en vigueur ;</li>
+            <li>être ouverts et transparents dans leur communication avec la population et les médias, et disposés à répondre à leurs questions et à leurs préoccupations ;</li>
+            <li>faire preuve de discernement et de bon jugement, admettre leurs erreurs et en tirer les leçons ;</li>
+            <li>être attentifs aux besoins et aux préoccupations de la population, et travailler avec elle pour améliorer la sécurité et la qualité de vie de la communauté ;</li>
+            <li>gérer efficacement les situations de crise et de conflit, et être formés à la communication et à la gestion de crise ;</li>
+            <li>respecter et protéger l'environnement dans l'exercice de leurs fonctions ;</li>
+            <li>respecter les lois et réglementations en matière de droits de l'homme et de protection des personnes vulnérables.</li>
+          </ul>
+        </div>
+      </section>
+    </div>
+
+    <footer>Document interne SASP. Rédaction : Lieutenant 1 Thomas &amp; Raphaël Bradford.</footer>
+  </main>
+</div>
+
+<script>
+(function(){
+  var $=function(s,r){return (r||document).querySelector(s)};
+  var $$=function(s,r){return Array.prototype.slice.call((r||document).querySelectorAll(s))};
+  var root=document.documentElement;
+
+  /* ---------- Thème ---------- */
+  function themeNow(){
+    var t=root.getAttribute('data-theme');
+    if(t) return t;
+    return matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';
+  }
+  try{var st=localStorage.getItem('sasp-theme'); if(st) root.setAttribute('data-theme',st);}catch(e){}
+  $('#themeBtn').addEventListener('click',function(){
+    var n=themeNow()==='dark'?'light':'dark';
+    root.setAttribute('data-theme',n);
+    try{localStorage.setItem('sasp-theme',n);}catch(e){}
+  });
+
+  /* ---------- Pages (routage par #hash) ---------- */
+  var VIEWS=['accueil','procedures','codes-radio','formation-radio','reglement'];
+  var current='accueil', pending=null;
+  var nav=$('#nav'), navBtn=$('#navBtn'), wrap=$('#wrap');
+  var searching=false;
+
+  function buildNav(){
+    nav.innerHTML='';
+    var secs=$$('#v-'+current+' section[data-title]');
+    var show=!searching && secs.length>1;
+    nav.hidden=!show;
+    wrap.classList.toggle('solo',!show);
+    navBtn.style.display=show?'':'none';
+    if(!show) return;
+    secs.forEach(function(s,i){
+      var a=document.createElement('a');
+      a.href='#'+current; a.textContent=s.getAttribute('data-title'); a.setAttribute('data-sec',s.id);
+      if(i===0) a.className='on';
+      nav.appendChild(a);
+    });
+  }
+  function scrollToSec(id){
+    var el=document.getElementById(id);
+    if(el) el.scrollIntoView({behavior:'smooth',block:'start'});
+  }
+  function route(){
+    var h=location.hash.replace('#','');
+    if(VIEWS.indexOf(h)<0) h='accueil';
+    current=h;
+    VIEWS.forEach(function(v){ $('#v-'+v).classList.toggle('on',v===h); });
+    $$('.pages a').forEach(function(a){
+      var on=a.getAttribute('data-page')===h; a.classList.toggle('on',on);
+      if(on) a.setAttribute('aria-current','page'); else a.removeAttribute('aria-current');
+    });
+    nav.classList.remove('open'); navBtn.setAttribute('aria-expanded','false');
+    buildNav();
+    if(pending){ var p=pending; pending=null; requestAnimationFrame(function(){scrollToSec(p)}); }
+    else window.scrollTo(0,0);
+    spy();
+  }
+  function go(view,sec){
+    pending=sec||null;
+    if(current===view && location.hash==='#'+view){ var p=pending; pending=null; if(p) scrollToSec(p); }
+    else if(location.hash==='#'+view){ route(); }
+    else location.hash='#'+view;
+  }
+  addEventListener('hashchange',route);
+
+  document.addEventListener('click',function(e){
+    var g=e.target.closest('[data-go]');
+    if(g){
+      e.preventDefault();
+      var parts=g.getAttribute('data-go').split(':');
+      go(parts[0],parts[1]);
+      return;
+    }
+    var n=e.target.closest('#nav a');
+    if(n){
+      e.preventDefault();
+      nav.classList.remove('open'); navBtn.setAttribute('aria-expanded','false');
+      scrollToSec(n.getAttribute('data-sec'));
+    }
+  });
+  navBtn.addEventListener('click',function(){
+    var o=nav.classList.toggle('open'); navBtn.setAttribute('aria-expanded',o?'true':'false');
+  });
+
+  /* ---------- Scroll spy ---------- */
+  function spy(){
+    var links=$$('#nav a'); if(!links.length) return;
+    var y=window.scrollY+(parseInt(getComputedStyle(root).getPropertyValue('--hh'))||98)+40, cur=0;
+    links.forEach(function(a,i){
+      var s=document.getElementById(a.getAttribute('data-sec'));
+      if(s && s.offsetTop<=y) cur=i;
+    });
+    links.forEach(function(a,i){a.classList.toggle('on',i===cur)});
+  }
+  addEventListener('scroll',spy,{passive:true});
+
+  /* ---------- Recherche (tout le site) ---------- */
+  var blocks=$$('[data-block]');
+  var orig=new Map(), detInit=new Map();
+  blocks.forEach(function(b){
+    if(!b.hasAttribute('data-nohl')) orig.set(b,b.innerHTML);
+    if(b.tagName==='DETAILS') detInit.set(b,b.open);
+  });
+  function norm(s){return s.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'')}
+  function hl(el,q){
+    var nq=norm(q), w=document.createTreeWalker(el,NodeFilter.SHOW_TEXT), nodes=[];
+    while(w.nextNode()) nodes.push(w.currentNode);
+    nodes.forEach(function(n){
+      var t=n.nodeValue, nt=norm(t);
+      if(nt.length!==t.length||nt.indexOf(nq)<0) return;
+      var f=document.createDocumentFragment(), last=0, i;
+      while((i=nt.indexOf(nq,last))!==-1){
+        f.appendChild(document.createTextNode(t.slice(last,i)));
+        var m=document.createElement('mark'); m.textContent=t.slice(i,i+nq.length); f.appendChild(m);
+        last=i+nq.length;
+      }
+      f.appendChild(document.createTextNode(t.slice(last)));
+      n.parentNode.replaceChild(f,n);
+    });
+  }
+  $('#search').addEventListener('input',function(){
+    var q=this.value.trim(), nq=norm(q), active=q.length>=2, any=false;
+    blocks.forEach(function(b){
+      if(orig.has(b)) b.innerHTML=orig.get(b);
+      b.classList.remove('hidden');
+      if(b.tagName==='DETAILS') b.open=detInit.get(b);
+    });
+    searching=active;
+    document.body.classList.toggle('searching',active);
+    if(active){
+      blocks.forEach(function(b){
+        var m=norm(b.textContent).indexOf(nq)>-1;
+        b.classList.toggle('hidden',!m);
+        if(m){
+          any=true; if(b.tagName==='DETAILS') b.open=true;
+          var rows=$$('.codes li',b), hit=rows.filter(function(r){return norm(r.textContent).indexOf(nq)>-1});
+          if(hit.length) rows.forEach(function(r){ if(hit.indexOf(r)<0) r.classList.add('hidden'); });
+          if(orig.has(b)) hl(b,q);
+        }
+      });
+    } else any=true;
+    $$('main section[data-title]').forEach(function(s){
+      s.classList.toggle('hidden',active && !$$('[data-block]:not(.hidden)',s).length);
+    });
+    $$('.pagehead').forEach(function(h){
+      var v=h.parentNode; h.classList.toggle('hidden',active && !$$('[data-block]:not(.hidden)',v).length);
+    });
+    $$('#v-accueil section').forEach(function(s){ s.classList.toggle('hidden',active); });
+    $('#v-accueil').classList.toggle('hidden',active);
+    $('#empty').hidden=any;
+    buildNav(); spy();
+  });
+
+  /* ---------- Checklist arrestation ---------- */
+  var KEY='sasp-steps';
+  function count(){
+    var bx=$$('#steps input'), d=bx.filter(function(b){return b.checked}).length;
+    $('#stepsCount').textContent=d+' / '+bx.length;
+    $('#meterFill').style.width=(bx.length?d/bx.length*100:0)+'%';
+    try{localStorage.setItem(KEY,JSON.stringify(bx.map(function(b){return b.checked})));}catch(e){}
+  }
+  try{var sv=JSON.parse(localStorage.getItem(KEY)||'[]'); $$('#steps input').forEach(function(b,i){b.checked=!!sv[i]});}catch(e){}
+  $$('#steps input').forEach(function(b){b.addEventListener('change',count)});
+  $('#resetSteps').addEventListener('click',function(){$$('#steps input').forEach(function(b){b.checked=false});count();});
+  count();
+
+  /* ---------- Copie ---------- */
+  function copyText(txt,el,btn,label){
+    function done(){btn.textContent='Copié'; setTimeout(function(){btn.textContent=label},1600);}
+    function fallback(){
+      var r=document.createRange(); r.selectNodeContents(el);
+      var s=getSelection(); s.removeAllRanges(); s.addRange(r);
+      try{document.execCommand('copy');}catch(e){}
+      done();
+    }
+    if(navigator.clipboard&&navigator.clipboard.writeText){
+      navigator.clipboard.writeText(txt).then(done,fallback);
+    } else fallback();
+  }
+
+  /* ---------- Miranda ---------- */
+  function buildMiranda(){
+    var nom=$('#mNom').value.trim()||'X', motif=$('#mMotif').value.trim()||'X',
+        date=$('#mDate').value.trim()||'../../....', h=$('#mHeure').value.trim();
+    h=h?(/h/i.test(h)?h:h+'h'):'..h…';
+    $('#mirandaText').textContent="Monsieur "+nom+", vous êtes en état d'arrestation pour "+motif+" le "+date+" à "+h+". Vous avez le droit de garder le silence. Si vous renoncez à ce droit, tout ce que vous direz pourra être et sera utilisé contre vous devant une cour de justice. Vous avez le droit à un avocat et d'avoir un avocat présent lors de l'interrogatoire. Si vous n'en avez pas les moyens, un avocat vous sera commis d'office s'il y en a un en ville. Durant chaque interrogatoire, vous pourrez décider à n'importe quel moment d'exercer ces droits, de ne répondre à aucune question ou de ne faire aucune déposition. Durant votre GAV, vous pourrez bénéficier de soins ainsi que de nourriture et d'eau. Si aucun avocat ni aucun médecin n'est présent en ville, la procédure suivra son cours. Avez-vous bien compris les droits que je viens de vous lire ?";
+  }
+  ['#mNom','#mMotif','#mDate','#mHeure'].forEach(function(s){$(s).addEventListener('input',buildMiranda)});
+  $('#nowBtn').addEventListener('click',function(){
+    var d=new Date(), p=function(n){return String(n).padStart(2,'0')};
+    $('#mDate').value=p(d.getDate())+'/'+p(d.getMonth()+1)+'/'+d.getFullYear();
+    $('#mHeure').value=p(d.getHours())+'h'+p(d.getMinutes());
+    buildMiranda();
+  });
+  $('#copyMiranda').addEventListener('click',function(){
+    var el=$('#mirandaText'); copyText(el.textContent,el,this,'Copier le texte');
+  });
+
+  /* ---------- Composeur de message radio ---------- */
+  function lines(){
+    var em=$('#rEm').value.trim()||'Émetteur', de=$('#rDe').value.trim(), su=$('#rSu').value.trim()||'sujet';
+    if(de) return ['« '+em+' pour '+de+' »','« '+de+' à l\'écoute »','« '+em+', '+su+' »','« Bien reçu »'];
+    return ['« De '+em+' pour toutes les unités, '+su+' »'];
+  }
+  function drawOut(){
+    var out=$('#rOut'); out.innerHTML='';
+    lines().forEach(function(l){ var li=document.createElement('li'); li.textContent=l; out.appendChild(li); });
+  }
+  ['#rEm','#rDe','#rSu'].forEach(function(s){$(s).addEventListener('input',drawOut)});
+  $('#rCopy').addEventListener('click',function(){
+    copyText(lines().join('\n'),$('#rOut'),this,'Copier la séquence');
+  });
+
+  route();
+})();
+</script>
+
+</html>
