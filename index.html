@@ -190,6 +190,33 @@ blockquote{margin:0 0 14px;padding:14px 18px;background:var(--tint);border-left:
 .lvl.l1{background:var(--brand);color:#fff}
 .lvl.l2{background:var(--gold);color:var(--on-gold)}
 .lvl.l3{background:var(--danger-soft);color:var(--danger);box-shadow:inset 0 0 0 1px var(--danger)}
+/* Code pénal */
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+table.pen{min-width:760px}
+table.pen th.ck,table.pen td.ck{width:40px;padding-right:0}
+table.pen td{font-size:.92rem}
+table.pen td.nm{font-weight:600;min-width:200px}
+table.pen td.am{font-family:var(--f-body);white-space:normal;min-width:150px}
+table.pen td:first-child{font-family:var(--f-body)}
+table.pen tr.on td{background:var(--gold-soft)}
+table.pen input[type=checkbox]{width:18px;height:18px;accent-color:var(--gold)}
+.qty{display:flex;align-items:center;gap:6px;margin-top:6px;font-size:.78rem;color:var(--muted)}
+.qty input{width:68px;padding:4px 6px;border:1px solid var(--line);background:var(--panel);color:var(--ink);border-radius:4px;font:500 .9rem var(--f-mono)}
+.manual{color:var(--warn);font-weight:600}
+.calc{position:sticky;top:calc(var(--hh) + env(safe-area-inset-top,0px) + 8px);z-index:20;box-shadow:0 6px 18px rgba(0,0,0,.12);border-top:4px solid var(--gold)}
+.calc-top{display:flex;flex-wrap:wrap;gap:12px 28px;align-items:flex-end}
+.calc-fig small{display:block;font:600 .72rem var(--f-body);text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
+.calc-fig b{font:500 1.9rem/1.1 var(--f-mono);font-variant-numeric:tabular-nums}
+.calc-act{margin-left:auto;display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.rec{display:flex;align-items:center;gap:8px;font-weight:600;cursor:pointer}
+.rec input{width:18px;height:18px;accent-color:var(--gold)}
+.calc-notes{margin:12px 0 0!important;padding:0!important;list-style:none;display:grid;gap:6px;max-height:28vh;overflow:auto;font-size:.9rem}
+.calc-notes li{padding:7px 10px;background:var(--tint);border:1px solid var(--line);margin:0!important}
+.calc-notes .n-red{background:var(--danger-soft);border-color:var(--danger);color:var(--danger)}
+.calc-notes .n-gold{background:var(--warn-soft);border-color:var(--warn)}
+.calc p{margin:10px 0 0}
+@media(max-width:560px){.calc-act{margin-left:0}.calc-fig b{font-size:1.5rem}}
+
 /* Règlement */
 .rl{list-style:none;margin:0!important;padding:0!important}
 .rl li{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;padding:11px 0;margin:0!important;border-bottom:1px solid var(--line)}
@@ -226,6 +253,7 @@ footer{color:var(--muted);font-size:.85rem;border-top:1px solid var(--line);padd
     <nav class="pages" aria-label="Pages">
       <a href="#accueil" data-page="accueil">Accueil</a>
       <a href="#procedures" data-page="procedures">Procédures</a>
+      <a href="#code-penal" data-page="code-penal">Code pénal</a>
       <a href="#codes-radio" data-page="codes-radio">Codes radio</a>
       <a href="#formation-radio" data-page="formation-radio">Formation radio</a>
       <a href="#reglement" data-page="reglement">Règlement</a>
@@ -265,6 +293,11 @@ footer{color:var(--muted);font-size:.85rem;border-top:1px solid var(--line);padd
           <p>Parler à la radio, ouvrir la discussion, gérer les communications prioritaires.</p>
           <small>4 chapitres + outil de message</small>
         </a>
+        <a class="door" href="#code-penal">
+          <h2>Code pénal</h2>
+          <p>Amendes et procédures par infraction, avec un calculateur d'amende et de durée de GAV.</p>
+          <small>52 infractions + calculateur</small>
+        </a>
         <a class="door" href="#codes-radio">
           <h2>Codes radio</h2>
           <p>Les codes 10-xx de communication et d'intervention, les niveaux de priorité et les rappels.</p>
@@ -283,6 +316,7 @@ footer{color:var(--muted);font-size:.85rem;border-top:1px solid var(--line);padd
           <button class="chip" type="button" data-go="procedures:arrestation">Arrestation</button>
           <button class="chip" type="button" data-go="procedures:miranda">Droits Miranda</button>
           <button class="chip" type="button" data-go="procedures:procedures-fouille">Fouille</button>
+          <button class="chip" type="button" data-go="code-penal:calculateur">Calculateur d'amende</button>
           <button class="chip" type="button" data-go="procedures:armement">Armement</button>
           <button class="chip" type="button" data-go="codes-radio:intervention">Codes intervention</button>
           <button class="chip" type="button" data-go="reglement:interieur">Règlement intérieur</button>
@@ -317,7 +351,7 @@ footer{color:var(--muted);font-size:.85rem;border-top:1px solid var(--line);padd
             <div class="cell"><span class="tag">Tango</span><p>Patrouille à <strong>3 personnes ou plus</strong>.</p></div>
           </div>
           <div class="block caution" data-block>
-            <p>La patrouille <strong>Lincoln</strong> est interdit aux grades inférieurs à « Officier 1 », sauf autorisation d'un Haut-Gradé.</p>
+            <p>Le code <strong>Lincoln</strong> est interdit aux grades inférieurs à « Agent de 2ème classe », sauf autorisation d'un Haut-Gradé.</p>
           </div>
           <div class="block" data-block>
             <p>Seul un <strong>Haut-Gradé</strong> est qualifié pour mettre en place un dispatch.</p>
@@ -406,12 +440,12 @@ footer{color:var(--muted);font-size:.85rem;border-top:1px solid var(--line);padd
           </details>
           <details class="block" data-block>
             <summary>Amender</summary>
-            <p>Référez-vous au code pénale de Los Santos.</p>
-            <a class="btn" target="_blank" rel="noopener" href="https://docs.google.com/spreadsheets/d/1NHWHVuyfVMZB9r7yto3ZGISm_KMKu8pT-psgN9OQsMs/edit?usp=sharing">Ouvrir pénale</a>
+            <p>Référez-vous au code de la route de Los Santos.</p>
+            <a class="btn" target="_blank" rel="noopener" href="https://docs.google.com/spreadsheets/d/1NHWHVuyfVMZB9r7yto3ZGISm_KMKu8pT-psgN9OQsMs/edit?usp=sharing">Ouvrir le code de la route</a>
           </details>
           <details class="block" data-block>
             <summary>Menotter</summary>
-            <p>Un agent peut menotter une personne <strong>meme si elle est coopérative</strong>.</p>
+            <p>Un agent peut menotter une personne <strong>seulement si elle est non coopérative</strong>.</p>
           </details>
         </div>
       </section>
@@ -486,13 +520,13 @@ footer{color:var(--muted);font-size:.85rem;border-top:1px solid var(--line);padd
         <div class="block" data-block data-nohl>
           <p>Toute personne qui commet un crime ou un délit est arrêtée, puis conduite au poste SASP le plus proche. Les <a href="#procedures" data-go="procedures:miranda">droits Miranda</a> lui sont lus au préalable. Cochez les étapes au fil de l'intervention.</p>
           <ol class="steps" id="steps">
-            <li><label><input type="checkbox"><span>Placez la personne face à un mur ou un véhicule, bras levés. Menottez la.</span></label></li>
+            <li><label><input type="checkbox"><span>Placez la personne face à un mur ou un véhicule, bras levés. Si elle est hostile ou menaçante, vous pouvez la menotter.</span></label></li>
             <li><label><input type="checkbox"><span><strong>Palpation de sécurité</strong>, pas une fouille. Arme de classe 2 ou 3 : confiscation. Autre type d'arme : confiscation officieuse.</span></label></li>
             <li><label><input type="checkbox"><span>Lecture des droits Miranda (possible aussi au poste). Tout oubli entraîne un <strong>vice de procédure</strong>.</span></label></li>
             <li><label><input type="checkbox"><span>Demandez s'il veut exercer un de ses droits et appelez le ou les services demandés. Si un avocat est présent, appelez le <strong>Procureur</strong> pour défendre les services publics.</span></label></li>
             <li><label><input type="checkbox"><span>Installez-le à l'arrière d'un de nos véhicules 4 places.</span></label></li>
-            <li><label><input type="checkbox"><span><strong>fouille approfondie</strong></span></label></li>
-            <li><label><input type="checkbox"><span>Direction la salle du mug shot. Restez derrière lui pour éviter toute rébellion.</span></label></li>
+            <li><label><input type="checkbox"><span>Au poste : direction les casiers, il dépose toutes ses affaires, puis <strong>fouille approfondie</strong> de l'individu et de son casier.</span></label></li>
+            <li><label><input type="checkbox"><span>Direction la salle du casier judiciaire. Restez derrière lui pour éviter toute rébellion.</span></label></li>
             <li><label><input type="checkbox"><span>Photo (haut du torse et visage), puis demande de la carte d'identité. <strong>Seulement s'il n'en a pas</strong> : empreintes et impression d'une nouvelle carte.</span></label></li>
             <li><label><input type="checkbox"><span>Créez son casier judiciaire sur la MDT, placez-le dans une cellule libre, donnez-lui un <strong>bipeur</strong> et demandez-lui s'il veut exercer un de ses droits. Vous pouvez ensuite reprendre votre activité.</span></label></li>
             <li><label><input type="checkbox"><span><strong>Amende :</strong> pour la durée de GAV, prenez la plus élevée, <u>jamais additionnées</u>. Pour l'amende, <u>cumulez-les</u> et appliquez-la une fois en cellule.</span></label></li>
@@ -521,6 +555,54 @@ footer{color:var(--muted);font-size:.85rem;border-top:1px solid var(--line);padd
             <button class="btn" id="copyMiranda" type="button">Copier le texte</button>
             <button class="btn line" id="nowBtn" type="button">Date et heure actuelles</button>
           </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- ================= CODE PENAL ================= -->
+    <div class="view" id="v-code-penal" data-view="code-penal">
+      <header class="pagehead">
+        <h1>Code pénal</h1>
+        <p>Contraventions, délits et crimes avec leur amende et leur procédure. Cochez les infractions retenues pour calculer l'amende totale et la durée de GAV.</p>
+      </header>
+
+      <section id="calculateur" data-title="Calculateur">
+        <h2>Calculateur</h2>
+        <div class="block calc" data-block data-nohl>
+          <div class="calc-top">
+            <div class="calc-fig"><small>Amende totale</small><b id="cTotal">0 $</b></div>
+            <div class="calc-fig"><small>GAV à appliquer</small><b id="cGav">0 min</b></div>
+            <div class="calc-fig"><small>Infractions</small><b id="cCount">0</b></div>
+            <div class="calc-act">
+              <label class="rec"><input type="checkbox" id="cRec"> Récidive</label>
+              <button class="btn line" id="cReset" type="button">Tout décocher</button>
+            </div>
+          </div>
+          <ul class="calc-notes" id="cNotes" hidden></ul>
+          <p class="note" id="cHint">Cochez une infraction dans les tableaux ci-dessous. Les amendes sont cumulées. Pour la GAV, on retient la durée la plus élevée, jamais additionnée.</p>
+        </div>
+      </section>
+
+      <section id="contraventions" data-title="Contraventions">
+        <h2>Contraventions</h2>
+        <div class="block" data-block data-nohl><div class="tablewrap"><table class="pen" id="t-contraventions"></table></div></div>
+      </section>
+
+      <section id="delits-mineurs" data-title="Délits mineurs">
+        <h2>Délits mineurs</h2>
+        <div class="block" data-block data-nohl><div class="tablewrap"><table class="pen" id="t-delits-mineurs"></table></div></div>
+      </section>
+
+      <section id="delits-majeurs" data-title="Délits majeurs">
+        <h2>Délits majeurs</h2>
+        <div class="block" data-block data-nohl><div class="tablewrap"><table class="pen" id="t-delits-majeurs"></table></div></div>
+      </section>
+
+      <section id="crimes" data-title="Crimes">
+        <h2>Crimes</h2>
+        <div class="block alert" data-block data-nohl>
+          <p>Pour tous les crimes, <strong>appelez le Procureur</strong>. Le suspect reste en détention jusqu'au jugement, y compris en cas de récidive.</p>
+          <div class="tablewrap"><table class="pen" id="t-crimes"></table></div>
         </div>
       </section>
     </div>
@@ -814,7 +896,7 @@ footer{color:var(--muted);font-size:.85rem;border-top:1px solid var(--line);padd
   });
 
   /* ---------- Pages (routage par #hash) ---------- */
-  var VIEWS=['accueil','procedures','codes-radio','formation-radio','reglement'];
+  var VIEWS=['accueil','procedures','code-penal','codes-radio','formation-radio','reglement'];
   var current='accueil', pending=null;
   var nav=$('#nav'), navBtn=$('#navBtn'), wrap=$('#wrap');
   var searching=false;
@@ -892,6 +974,143 @@ footer{color:var(--muted);font-size:.85rem;border-top:1px solid var(--line);padd
   }
   addEventListener('scroll',spy,{passive:true});
 
+  /* ---------- Code pénal + calculateur ---------- */
+  var PEN={
+    'contraventions':{head:'Contravention',rows:[
+      ['Excès de vitesse, entre 20 et 29 km/h',125,'-','-'],
+      ['Excès de vitesse, entre 30 et 39 km/h',150,'-','-'],
+      ['Excès de vitesse, entre 40 et 49 km/h',175,'-','-'],
+      ['Excès de vitesse, plus de 49 km/h',{base:200,u:10,l:'km/h au-dessus de 49'},'Retrait du permis','Retrait du permis et interdiction de le repasser pendant 2 jours'],
+      ['Non-respect du sens interdit',50,'-','-'],
+      ["Non-respect de l'arrêt au feu rouge",50,'-','-'],
+      ['Conduite sans permis valide',250,"Immobilisation du véhicule jusqu'au rétablissement de la validité du permis",'Interdiction de le passer pendant 7 jours'],
+      ['Véhicule dégradé',250,"Obligation d'appeler une dépanneuse","Obligation d'appeler une dépanneuse"],
+      ['Conduite en contre-sens',100,'-','-'],
+      ['Ivresse sur la voie publique',500,"Cellule de dégrisement 5 minutes + ouverture dossier","Cellule de dégrisement 5 minutes + ouverture dossier + GAV 10 mins"],
+      ['Holster interdit',100,'Retrait du holster',"Retrait du holster + 100$ d'amende supp"],
+      ['Dissimulation du visage en lieu public',50,'Retrait de la cagoule, du masque, ...',"Retrait de la cagoule, du masque, ... + 50$ d'amende supp"],
+      ['Violation de la propriété privée',175,'-',"Ouverture d'une enquête"],
+      ["Possession illégale d'un gilet par balle",150,'Retrait du gilet par balle',"Ouverture d'une enquête + retrait du gilet par balle + 150$ d'amende supp"]
+    ]},
+    'delits-mineurs':{head:'Délit mineur',rows:[
+      ['Délit de fuite',100,'Cellule 5 minutes','Cellule 5 minutes'],
+      ["Refus d'obtempérer",150,'Cellule 5 minutes','Cellule 5 minutes'],
+      ['Vol de boîte aux lettres',200,'Cellule 10 minutes','Cellule 10 minutes + ouverture dossier'],
+      ['Braquage de conteneur',500,'Cellule 10 minutes','Cellule 10 minutes + ouverture dossier'],
+      ['Course de rue illégale',350,'Mise en fourrière du véhicule','Mise en fourrière du véhicule + cellule 5 minutes'],
+      ['Dégradation de biens publics',15,'-','Cellule 5 mins'],
+      ['Dégradation de biens privés',50,'-','Cellule 5 mins'],
+      ["Agression sur agent de l'état",500,'Cellule 10 minutes','Cellule 15 minutes + ouverture dossier'],
+      ['Agression sur citoyen',300,'Cellule 10 minutes','Cellule 15 minutes + ouverture dossier'],
+      ['Braquage à main armée sur civil',1250,"Cellule 15 minutes + retrait de l'arme + ouverture dossier","Cellule 20 minutes + retrait de l'arme + obligation de soins + ouverture dossier"],
+      ['Braquage à main armée supérette',1000,"Cellule 15 minutes + retrait de l'arme + ouverture dossier","Cellule 20 minutes + retrait de l'arme + obligation de soins + ouverture dossier"],
+      ['Menaces de mort / Menaces graves',250,'Cellule 5 minutes (si preuves)','Cellule 15 minutes (si preuves)'],
+      ["Possession d'alcool",{u:125,l:'bouteille'},"Retrait de l'alcool","Retrait de l'alcool + malus de 100 $"],
+      ['Possession de cannabis',{u:135,l:'cannabis'},'Retrait de la drogue','Retrait de la drogue + malus de 150 $'],
+      ['Possession de méthamphétamine',{u:145,l:'méth'},'Retrait de la drogue','Retrait de la drogue + malus de 350 $'],
+      ['Vol de véhicule',350,'Cellule 5 minutes + mise en fourrière du véhicule','Cellule 10 minutes + mise en fourrière du véhicule'],
+      ["Vol de véhicule d'entreprise",450,'Cellule 5 minutes + mise en fourrière du véhicule','Cellule 10 minutes + mise en fourrière du véhicule'],
+      ["Détention d'arme blanche illégale",500,"Cellule 5 minutes + retrait de l'arme + ouverture de dossier","Cellule 5 minutes + retrait de l'arme"]
+    ]},
+    'delits-majeurs':{head:'Délit majeur',rows:[
+      ["Détention de balles d'arme lourde",{u:50,l:'balle'},'Cellule 5 minutes + retrait des balles + ouverture dossier',"Cellule 10 minutes + retrait des balles + ouverture d'enquête"],
+      ["Détention de balles d'arme légère",{u:20,l:'balle'},'Cellule 5 minutes + retrait des balles + ouverture dossier',"Cellule 10 minutes + retrait des balles + ouverture d'enquête"],
+      ["Détention d'arme à feu",850,"Cellule 10 minutes + retrait de l'arme + ouverture dossier","Cellule 15 minutes + retrait de l'arme + ouverture d'enquête"],
+      ['Entreposer des armes illégales (>5)',2500,"Cellule 10 minutes + ouverture d'enquête + retrait des armes",'Cellule 15 minutes + comparution immédiate + retrait des armes'],
+      ['Braquage à main armée FLEECA BANK',2000,'Cellule 10 minutes + retrait des armes + ouverture dossier',"Cellule 15 minutes + retrait des armes + ouverture d'enquête"],
+      ["Possession d'argent liquide (>10 000 $)",'Retrait de ce qui dépasse 10 000 $ (à calculer à la main)',"Cellule 5 minutes + retrait de l'argent","Cellule 5 minutes + retrait de l'argent"],
+      ["Participation à un jeu d'argent",1250,'Cellule 5 minutes + ouverture dossier',"Cellule 10 minutes + ouverture d'enquête"],
+      ["Trafic d'alcool (>50 bouteilles)",2500,"Cellule 15 minutes + retrait des bouteilles + ouverture d'enquête",'Cellule 20 minutes + retrait des bouteilles + perquisition'],
+      ['Trafic de cannabis (>100 pochons)',1500,"Cellule 15 minutes + retrait des drogues + ouverture d'enquête",'Cellule 20 minutes + retrait des drogues + perquisition'],
+      ['Trafic de métamphétamine (>100 pochons)',1250,"Cellule 15 minutes + retrait des drogues + ouverture d'enquête",'Cellule 20 minutes + retrait des drogues + perquisition'],
+      ["Kidnapping / Prise d'otage",650,"Cellule 10 minutes + ouverture d'enquête",'Cellule 10 minutes + comparution immédiate']
+    ]},
+    'crimes':{head:'Crime',rows:[
+      ["Tentative d'homicide",'P'],['Assassinat','P'],['Assassinat en bande organisée','P'],['Blanchiment','P'],
+      ['Braquage de la PACIFIC BANK','P'],['Évasion','P'],["Organisation d'évasion",'P'],['Terrorisme','P'],["Trafic d'arme",'P']
+    ]}
+  };
+  var ITEMS={}, sel={};
+  function fm(n){return n.toLocaleString('fr-FR')+' $'}
+  function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;')}
+  function dash(s){return s==='-'?'—':esc(s)}
+  Object.keys(PEN).forEach(function(k){
+    var g=PEN[k], crime=(k==='crimes');
+    var h='<thead><tr><th class="ck"><span class="sr">Appliquer</span></th><th>'+g.head+'</th><th>Amende</th><th>Procédure</th><th>Si récidive</th></tr></thead><tbody>';
+    g.rows.forEach(function(r,i){
+      var id=k+'-'+i, a=r[1], cell, it={id:id,name:r[0],crime:crime,proc:r[2]||'',rec:r[3]||'',a:a};
+      if(crime){ cell='<span class="tg fire">Procureur</span>'; it.proc='Détention jusqu\'au jugement'; it.rec=it.proc; }
+      else if(typeof a==='number') cell='<b>'+fm(a)+'</b>';
+      else if(typeof a==='string') cell='<span class="manual">'+esc(a)+'</span>';
+      else if(a.base!==undefined) cell='<b>'+fm(a.base)+'</b> + '+fm(a.u)+' par '+esc(a.l)+'<label class="qty">'+esc(a.l)+'<input type="number" min="0" value="1" inputmode="numeric" aria-label="Nombre de '+esc(a.l)+'"></label>';
+      else cell='<b>'+fm(a.u)+'</b> par '+esc(a.l)+'<label class="qty">'+esc(a.l)+'s<input type="number" min="0" value="1" inputmode="numeric" aria-label="Nombre de '+esc(a.l)+'"></label>';
+      ITEMS[id]=it;
+      h+='<tr class="pr" data-id="'+id+'"><td class="ck"><input type="checkbox" aria-label="Appliquer : '+esc(r[0])+'"></td><td class="nm">'+esc(r[0])+'</td><td class="am">'+cell+'</td><td>'+dash(it.proc)+'</td><td>'+dash(it.rec)+'</td></tr>';
+    });
+    $('#t-'+k).innerHTML=h+'</tbody>';
+  });
+  function gavMin(s){
+    var m=s.match(/(?:Cellule(?: de dégrisement)?|GAV)\s*(\d+)\s*min/gi), best=0;
+    (m||[]).forEach(function(x){ var n=parseInt(x.replace(/\D+/g,''),10); if(n>best) best=n; });
+    return best;
+  }
+  function supp(s){
+    var t=0, re=/(?:\+\s*(\d+)\s*\$\s*d'amende supp|malus de (\d+)\s*\$)/g, m;
+    while((m=re.exec(s))!==null) t+=parseInt(m[1]||m[2],10);
+    return t;
+  }
+  function calc(){
+    var rec=$('#cRec').checked, total=0, gav=0, n=0, notes=[], procs=[], crime=false, manual=false;
+    Object.keys(sel).forEach(function(id){
+      var it=ITEMS[id], row=$('tr.pr[data-id="'+id+'"]'), q=1;
+      var qi=row&&$('.qty input',row); if(qi) q=Math.max(0,parseInt(qi.value,10)||0);
+      n++;
+      if(it.crime){ crime=true; return; }
+      var a=it.a;
+      if(typeof a==='number') total+=a;
+      else if(typeof a==='string') manual=true;
+      else if(a.base!==undefined) total+=a.base+a.u*q;
+      else total+=a.u*q;
+      var p=rec?it.rec:it.proc;
+      if(rec) total+=supp(it.rec);
+      gav=Math.max(gav,gavMin(p));
+      if(p&&p!=='-'&&procs.indexOf(it.name+' : '+p)<0) procs.push(it.name+' : '+p);
+    });
+    $('#cTotal').textContent=fm(total);
+    $('#cGav').textContent=gav+' min';
+    $('#cCount').textContent=n;
+    var ul=$('#cNotes'), html='';
+    if(crime) html+='<li class="n-red"><strong>Crime sélectionné :</strong> appelez le Procureur. Détention jusqu\'au jugement.</li>';
+    if(manual) html+='<li class="n-gold"><strong>Argent liquide :</strong> le montant retiré est à calculer à la main et n\'est pas compté dans le total.</li>';
+    procs.forEach(function(p){ html+='<li>'+esc(p)+'</li>'; });
+    ul.innerHTML=html; ul.hidden=!html;
+    $('#cHint').hidden=n>0;
+    $$('tr.pr').forEach(function(r){ r.classList.toggle('on',!!sel[r.getAttribute('data-id')]); });
+  }
+  var cp=$('#v-code-penal');
+  cp.addEventListener('change',function(e){
+    var t=e.target, row=t.closest('tr.pr');
+    if(t.id==='cRec'){ calc(); return; }
+    if(!row) return;
+    var id=row.getAttribute('data-id');
+    if(t.type==='checkbox'){ if(t.checked) sel[id]=1; else delete sel[id]; }
+    calc();
+  });
+  cp.addEventListener('input',function(e){
+    var t=e.target, row=t.closest('tr.pr');
+    if(row && t.type==='number'){
+      var id=row.getAttribute('data-id'), cb=$('.ck input',row);
+      if(!cb.checked){ cb.checked=true; sel[id]=1; }
+      calc();
+    }
+  });
+  $('#cReset').addEventListener('click',function(){
+    sel={}; $$('tr.pr .ck input').forEach(function(c){c.checked=false});
+    $$('tr.pr .qty input').forEach(function(q){q.value=1});
+    calc();
+  });
+  calc();
+
   /* ---------- Recherche (tout le site) ---------- */
   var blocks=$$('[data-block]');
   var orig=new Map(), detInit=new Map();
@@ -918,6 +1137,7 @@ footer{color:var(--muted);font-size:.85rem;border-top:1px solid var(--line);padd
   }
   $('#search').addEventListener('input',function(){
     var q=this.value.trim(), nq=norm(q), active=q.length>=2, any=false;
+    $$('tr.pr.hidden').forEach(function(r){r.classList.remove('hidden')});
     blocks.forEach(function(b){
       if(orig.has(b)) b.innerHTML=orig.get(b);
       b.classList.remove('hidden');
@@ -931,7 +1151,7 @@ footer{color:var(--muted);font-size:.85rem;border-top:1px solid var(--line);padd
         b.classList.toggle('hidden',!m);
         if(m){
           any=true; if(b.tagName==='DETAILS') b.open=true;
-          var rows=$$('.codes li',b), hit=rows.filter(function(r){return norm(r.textContent).indexOf(nq)>-1});
+          var rows=$$('.codes li, tr.pr',b), hit=rows.filter(function(r){return norm(r.textContent).indexOf(nq)>-1});
           if(hit.length) rows.forEach(function(r){ if(hit.indexOf(r)<0) r.classList.add('hidden'); });
           if(orig.has(b)) hl(b,q);
         }
