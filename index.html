@@ -300,8 +300,8 @@ footer{color:var(--muted);font-size:.85rem;border-top:1px solid var(--line);padd
         </a>
         <a class="door" href="#codes-radio">
           <h2>Codes radio</h2>
-          <p>Les codes 10-xx de communication et d'intervention, les niveaux de priorité et les rappels.</p>
-          <small>38 codes + Code 1 / 2 / 3</small>
+          <p>Les codes 10-xx, les niveaux de priorité et les rappels.</p>
+          <small>16 codes + Code 1 / 2 / 3</small>
         </a>
         <a class="door" href="#reglement">
           <h2>Règlement</h2>
@@ -318,7 +318,7 @@ footer{color:var(--muted);font-size:.85rem;border-top:1px solid var(--line);padd
           <button class="chip" type="button" data-go="procedures:procedures-fouille">Fouille</button>
           <button class="chip" type="button" data-go="code-penal:calculateur">Calculateur d'amende</button>
           <button class="chip" type="button" data-go="procedures:armement">Armement</button>
-          <button class="chip" type="button" data-go="codes-radio:intervention">Codes intervention</button>
+          <button class="chip" type="button" data-go="codes-radio:codes">Codes radio 10-xx</button>
           <button class="chip" type="button" data-go="reglement:interieur">Règlement intérieur</button>
           <button class="chip" type="button" data-go="formation-radio:dialogue">Dialogue radio</button>
         </div>
@@ -405,7 +405,7 @@ footer{color:var(--muted);font-size:.85rem;border-top:1px solid var(--line);padd
               <li>Destinataire (Centrale ou Agent)</li>
             </ol>
             <p class="note" style="margin-top:8px">Le titre se compose du type de patrouille et du matricule de l'agent le plus haut-gradé, ou de l'agent qui transmet.</p>
-            <p>Lors d'un <strong>10-56</strong> (refus d'obtempérer) ou d'un <strong>10-57</strong> (délit de fuite), annoncez le <strong>nombre d'occupants</strong> et décrivez précisément le véhicule.</p>
+            <p>Lors d'un <strong>10-56</strong> (course-poursuite), annoncez le <strong>nombre d'occupants</strong> et décrivez précisément le véhicule.</p>
             <div class="log">
               <div><b>ADAM 09</b><span>« ADAM 09 pour Centrale »</span></div>
               <div class="c"><b>CENTRALE</b><span>« Centrale à l'écoute »</span></div>
@@ -611,60 +611,29 @@ footer{color:var(--muted);font-size:.85rem;border-top:1px solid var(--line);padd
     <div class="view" id="v-codes-radio" data-view="codes-radio">
       <header class="pagehead">
         <h1>Codes radio</h1>
-        <p>Communications officielles du SASP. Les codes en rouge sont des priorités absolues. En cas de doute, demandez confirmation.</p>
+        <p>Communications officielles du SASP. En cas de doute, demandez confirmation.</p>
       </header>
 
-      <section id="communication" data-title="Communication">
-        <h2>Codes de communication</h2>
+      <section id="codes" data-title="Codes 10-xx">
+        <h2>Codes 10-xx</h2>
         <div class="block" data-block>
           <ul class="codes">
-            <li><b>10-3</b><span>Fin de transmission / Silence radio</span></li>
-            <li><b>10-4</b><span>Bien reçu / OK</span></li>
+            <li><b>10-3</b><span>Clear radio : fin de transmission, silence radio</span></li>
+            <li><b>10-4</b><span>Bien reçu</span></li>
             <li><b>10-5</b><span>Négatif</span></li>
-            <li><b>10-6</b><span>Occupé / Attendre avant de poursuivre sauf urgence</span></li>
-            <li><b>10-7</b><span>Hors service temporaire / Indisponible pour appel</span></li>
-            <li><b>10-8</b><span>En service / Disponible pour appel</span></li>
-            <li><b>10-9</b><span>Répéter le dernier message</span></li>
+            <li><b>10-6</b><span>Indisponible pendant…</span></li>
+            <li><b>10-8</b><span>Prise de service</span></li>
+            <li><b>10-9</b><span>Répétez</span></li>
             <li><b>10-10</b><span>Fin de service</span></li>
-            <li><b>10-14</b><span>Escorte ou convoi</span></li>
-            <li><b>10-15</b><span>Suspect détenu / Transport du prisonnier</span></li>
-            <li><b>10-17</b><span>Ajout de carburant</span></li>
-            <li><b>10-19</b><span>En route vers… (préciser la localisation)</span></li>
-            <li><b>10-20</b><span>Votre localisation</span></li>
-            <li><b>10-22</b><span>Annuler ou ignorer la transmission radio / appel</span></li>
-            <li><b>10-23</b><span>Standby / attente</span></li>
-            <li><b>10-24</b><span>Demande une transmission de voiture à voiture (Dispatch présent)</span></li>
-            <li><b>10-28</b><span>Vérification immatriculation</span></li>
-            <li><b>10-29</b><span>Vérification mandats / dossier criminel</span></li>
-            <li class="red"><b>10-31</b><span>Tirs d'armes à feu</span></li>
-            <li class="red"><b>10-35</b><span>Demande de renfort sur position de l'officier (préciser rue, etc.)</span></li>
-          </ul>
-        </div>
-      </section>
-
-      <section id="intervention" data-title="Intervention">
-        <h2>Codes d'intervention</h2>
-        <div class="block" data-block>
-          <p class="note">Dispatch et incidents.</p>
-          <ul class="codes gold">
-            <li><b>10-37</b><span>Cambriolage en cours</span></li>
-            <li><b>10-38</b><span>Contrôle routier / Traffic Stop</span></li>
-            <li><b>10-40</b><span>Braquage de supérette</span></li>
-            <li><b>10-41</b><span>Prise de patrouille</span></li>
-            <li><b>10-50</b><span>Accident (circulation par défaut, précisez si blessure corporelle)</span></li>
-            <li><b>10-51</b><span>Demande dépanneuse / Tow Truck</span></li>
-            <li><b>10-52</b><span>Demande ambulance / Paramedics</span></li>
-            <li class="red"><b>10-56</b><span>Refus d'obtempérer</span></li>
-            <li><b>10-57</b><span>Délit de fuite</span></li>
-            <li><b>10-58</b><span>Braquage d'ATM</span></li>
-            <li><b>10-59</b><span>Vol de véhicule</span></li>
-            <li><b>10-60</b><span>Vente de drogue</span></li>
-            <li><b>10-61</b><span>Braquage conteneur</span></li>
-            <li class="red"><b>10-62</b><span>Prise d'otage</span></li>
-            <li><b>10-63</b><span>Vol boîte aux lettres</span></li>
-            <li><b>10-91</b><span>Braquage de banque</span></li>
-            <li><b>10-97</b><span>Arrivé sur scène</span></li>
-            <li class="red"><b>10-99</b><span>Officier en danger</span></li>
+            <li><b>10-15</b><span>Transport de détenu (occupé x fois)</span></li>
+            <li><b>10-19</b><span>En route vers intervention X</span></li>
+            <li><b>10-20</b><span>Demande de localisation</span></li>
+            <li><b>10-23</b><span>Arrivée sur zone</span></li>
+            <li><b>10-31</b><span>Tir d'arme à feu</span></li>
+            <li><b>10-38</b><span>Contrôle d'une voiture</span></li>
+            <li><b>10-50</b><span>Accident</span></li>
+            <li><b>10-51</b><span>Appel EMS</span></li>
+            <li><b>10-56</b><span>En course-poursuite…</span></li>
           </ul>
         </div>
       </section>
@@ -692,7 +661,6 @@ footer{color:var(--muted);font-size:.85rem;border-top:1px solid var(--line);padd
             <li>Toujours donner un <strong>10-20 clair et précis</strong>.</li>
             <li>Préciser la rue, la direction et un point de repère.</li>
             <li>Rester professionnel et concis.</li>
-            <li class="no">Les codes en rouge sont des priorités absolues.</li>
             <li>En cas de doute, demander confirmation.</li>
           </ul>
           <p class="note" style="margin-top:10px">Prévenir · Protéger · Servir</p>
